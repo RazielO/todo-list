@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Use the official Maven image as a base image
 FROM maven:3.9.6-eclipse-temurin-21-jammy AS base
 
