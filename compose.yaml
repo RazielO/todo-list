@@ -1,9 +1,8 @@
 services:
   backend:
-    build:
-      context: ./backend
-    ports:
-      - 8080:8080
+    build: backend
+    expose:
+      - 8080
     networks:
       - todo-network
     env_file:
@@ -29,6 +28,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  frontend:
+    build: frontend
+    ports:
+      - 5000:80
+    depends_on:
+      - backend
+    networks:
+      - todo-network
+
 volumes:
   db-data:
 secrets:
@@ -36,4 +44,5 @@ secrets:
     file: db/password.txt
 networks:
   todo-network:
+
 
