@@ -8,17 +8,17 @@ import java.time.LocalDateTime
 
 
 @RestController
+@CrossOrigin(
+    origins = ["*"],
+    methods = [RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT]
+)
 class TodoController(private val todoRepository: TodoRepository) {
-    @GetMapping("/todo/all")
-    fun allTodos(): List<Todo> = todoRepository.findAll().toList()
 
-    @GetMapping("/todo/{id}")
-    fun todoById(@PathVariable id: Long): ResponseEntity<Any> {
-        val todo = todoRepository.findById(id)
-        if (todo.isEmpty) {
-            ResponseEntity.status(404).body("Todo with id $id not found")
-        }
-        return ResponseEntity.ok(todo.get())
+    @GetMapping("/todo/all")
+    fun allTodos(): List<Todo> {
+        val notCompleted = todoRepository.findAllNotCompletedOrderByCreatedAt()
+        val completed = todoRepository.findAllCompletedOrderByUpdatedAt()
+        return notCompleted + completed
     }
 
     @PostMapping("/todo")
