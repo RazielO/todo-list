@@ -3,6 +3,7 @@ package com.razielo.todo.controller
 import com.razielo.todo.entity.Todo
 import com.razielo.todo.repository.TodoRepository
 import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -29,7 +30,7 @@ class TodoController(private val todoRepository: TodoRepository) {
     fun completeTodo(@PathVariable id: Long): ResponseEntity<Any> {
         val existing = todoRepository.findById(id)
         if (existing.isEmpty) {
-            return ResponseEntity.status(404).body("Todo with id $id not found")
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo with id $id not found")
         }
         val updated = existing.get().copy(completed = !existing.get().completed, updatedAt = LocalDateTime.now())
         todoRepository.save(updated)
@@ -40,7 +41,7 @@ class TodoController(private val todoRepository: TodoRepository) {
     fun updateTodo(@PathVariable id: Long, @RequestBody todo: Todo): ResponseEntity<Any> {
         val existing = todoRepository.findById(id)
         if (existing.isEmpty) {
-            return ResponseEntity.status(404).body("Todo with id $id not found")
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo with id $id not found")
         }
         val updated = existing.get().copy(
             todo = todo.todo, completed = todo.completed, updatedAt = LocalDateTime.now()
@@ -53,7 +54,7 @@ class TodoController(private val todoRepository: TodoRepository) {
     fun deleteTodo(@PathVariable id: Long): ResponseEntity<Any> {
         val existing = todoRepository.findById(id)
         if (existing.isEmpty) {
-            return ResponseEntity.status(404).body("Todo with id $id not found")
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo with id $id not found")
         }
         todoRepository.deleteById(id)
         return ResponseEntity.ok(existing.get())
